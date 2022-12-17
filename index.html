@@ -9,6 +9,7 @@
   </head>
   <body>
     <!-- hompage -->
+    <div id="timer"></div>
     <div class="homepage">
       <h1>QuizApp</h1>
       <button id="startBtn">Start Quiz</button>
@@ -22,7 +23,11 @@
     </div>
 
     <!-- highscore page -->
-    <div class="highScore hidden"><input type="text" /></div>
+    <div class="highScore hidden">
+      <div><input id="input" type="text" /></div>
+      <button id="saveBtn">Save your score!</button>
+      <ul id="user"></ul>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

@@ -5,6 +5,47 @@ var quizQuestion = document.querySelector("#quizQuestion");
 var choices = document.querySelector("#choices");
 var startIndex = 0;
 var score = 0;
+var save = document.getElementById("saveBtn");
+var initials = document.getElementById("input");
+var user = document.getElementById("user");
+var timer = document.getElementById("timer");
+var secondsLeft = 30;
+var timerInterval;
+
+function timerSub() {
+  secondsLeft -= 3;
+  if (secondsLeft < 0) {
+    timer = 0;
+  }
+  timer.textContent = secondsLeft;
+  if (secondsLeft === 0) {
+    gameOver();
+  }
+}
+
+function setTime() {
+  // Sets interval in variable
+  timerInterval = setInterval(function () {
+    secondsLeft--;
+    timer.textContent = "Timer: " + secondsLeft;
+
+    if (secondsLeft === 0) {
+      clearInterval(timerInterval);
+      secondsLeft = 0;
+      gameOver();
+    }
+  }, 1000);
+}
+function gameOver() {
+  clearInterval(timerInterval);
+  alert("GAME OVER");
+  quizContainer.setAttribute("class", "hidden");
+  highScore.removeAttribute("class");
+}
+// function quizEnd() {
+//   quizContainer.setAttribute("class", "hidden");
+//   highScore.removeAttribute("class");
+// }
 
 var questions = [
   {
@@ -38,6 +79,7 @@ startBtn.addEventListener("click", function (e) {
 function quizStart() {
   homepage.setAttribute("class", "hidden");
   quizContainer.removeAttribute("class");
+  setTime();
   nextQuestion();
 }
 
@@ -60,16 +102,33 @@ function checkAnswer() {
     score += 5;
   } else {
     score -= 5;
+    timerSub();
   }
   console.log(score);
   startIndex++;
   if (startIndex === questions.length) {
-    quizEnd();
+    gameOver();
   } else {
     nextQuestion();
   }
 }
-function quizEnd() {
-  quizContainer.setAttribute("class", "hidden");
-  highScore.removeAttribute("class");
-}
+save.addEventListener("click", function () {
+  var scores = [];
+  var newScore = {
+    initials: initials.value,
+    score: score,
+  };
+  var localScore = localStorage.getItem("score");
+  if (localScore == undefined) {
+  } else {
+    scores = scores.concat(JSON.parse(localScore));
+  }
+  scores.push(newScore);
+  localStorage.setItem("score", JSON.stringify(scores));
+  for (var i = 0; i < scores.length; i++) {
+    var userEl = document.createElement("li");
+    userEl.textContent =
+      "|| Name: " + scores[i].initials + " " + "Score: " + scores[i].score;
+    user.appendChild(userEl);
+  }
+});
